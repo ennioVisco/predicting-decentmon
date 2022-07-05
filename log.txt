@@ -1,0 +1,4 @@
+x,cent_trace_len,decent_trace_len,odecent_trace_len,cent_num_mess,decent_num_mess,odecent_num_mess,cent_size_mess,decent_size_mess,odecent_size_mess,cent_nb_progressions,decent_nb_progressions,odecent_nb_progressions
+3,9,11,10,24,19,18,1.,17.56,4.59,153,709,175
+3,8,10,9,21,5,9,1.,1.85,2.45,48,110,59
+3,16,18,17,45,11,16,1.,2.49,2.6,96,251,114
