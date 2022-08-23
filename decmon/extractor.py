@@ -37,5 +37,3 @@ def count_all_ops(source: str) -> List[List[int]]:
     where each list corresponds to each list of known words
     """
     return [count_set_ops(ops_set, source) for ops_set in all_operators]
-
-

@@ -1,5 +1,4 @@
 from typing import List, Union
-
 import pandas as pd
 
 
@@ -16,4 +15,16 @@ def exclude_annotate(data: pd.DataFrame, exclude: Union[List[str], str],
     to_return['strategy'] = annotate
     return to_return
 
-#    to_return.columns = to_return.columns.str.replace(prefix, "")
+
+def select_metric(df, metric):
+    """
+    Selects the given column metric to the pair of columns (metric, value)
+    :param df: the dataframe having the current metric
+    :param metric: the metric to extract
+    :return: a copy of the original dataframe where the metric column
+    is replaced with the pair (metric, value)
+    """
+    new_df = df[['formula_id', 'strategy', metric]].copy()
+    new_df['metric'] = metric
+    new_df = new_df.rename(columns={metric: "value"})
+    return new_df

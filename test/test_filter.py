@@ -2,13 +2,19 @@ import unittest
 
 import pandas as pd
 
-from decmon.filter import exclude_annotate
+from decmon.filter import exclude_annotate, select_metric
 
 
 class TestCleaner(unittest.TestCase):
     df = pd.DataFrame(
         {'numbers': [1, 2, 3],
          'colors': ['c_red', 'c_white', 'c_blue'],
+         'numbers_2': [1, 2, 3]
+         })
+
+    df_2 = pd.DataFrame(
+        {'formula_id': [1, 2, 3],
+         'strategy': ['c_red', 'c_white', 'c_blue'],
          'numbers_2': [1, 2, 3]
          })
 
@@ -27,4 +33,10 @@ class TestCleaner(unittest.TestCase):
         self.assertEqual("strategy", filtered.columns[-1])
         self.assertNotIn(match, filtered.columns[0])
         self.assertEqual("strategy", filtered.columns[0])
-        print(filtered)
+
+    def test_selecting_numbers2_as_metric(self):
+        metric = "numbers_2"
+        selected = select_metric(self.df_2, metric)
+        self.assertEqual(4, len(selected.columns))
+        self.assertEqual("value", selected.columns[-2])
+        self.assertEqual("metric", selected.columns[-1])
