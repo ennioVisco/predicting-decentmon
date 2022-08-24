@@ -5,6 +5,7 @@ from decmon.extractor import *
 
 class TestExtractor(unittest.TestCase):
     test_string = 'Until (Ev (Var "b"), And (Var "c", Var "a"))'
+    test_trace = "{a|b| } ; { | | } ; {a| | }"
 
     def tests_it_works(self):
         self.assertEqual(True, True)
@@ -34,3 +35,33 @@ class TestExtractor(unittest.TestCase):
         self.assertEqual([3], ops_counts[1])
         self.assertEqual([1, 0, 0, 0, 0, 0], ops_counts[2])
         self.assertEqual([1, 0, 1, 0, 0, 0], ops_counts[3])
+
+    def tests_can_extract_right_number_of_events(self):
+        events = extract_event_samples(self.test_trace)
+        self.assertEqual(3, len(events))
+
+    def tests_can_extract_right_events_per_sample(self):
+        samples = extract_event_samples(self.test_trace)
+        events = extract_events(samples[0])
+        print(events)
+        self.assertEqual(3, len(events))
+        self.assertEqual("a", events[0])
+        self.assertEqual("b", events[1])
+        self.assertEqual(" ", events[2])
+
+    def tests_extract_all_sampled_events(self):
+        events = extract_sampled_events(self.test_trace)
+        print(events)
+        self.assertEqual(3, len(events))
+        self.assertEqual(3, len(events[0]))
+        self.assertEqual(3, len(events[1]))
+        self.assertEqual(3, len(events[2]))
+        self.assertEqual("a", events[0][0])
+        self.assertEqual("b", events[0][1])
+        self.assertEqual(" ", events[0][2])
+        self.assertEqual(" ", events[1][0])
+        self.assertEqual(" ", events[1][1])
+        self.assertEqual(" ", events[1][2])
+        self.assertEqual("a", events[2][0])
+        self.assertEqual(" ", events[2][1])
+        self.assertEqual(" ", events[2][2])

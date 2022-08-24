@@ -37,3 +37,33 @@ def count_all_ops(source: str) -> List[List[int]]:
     where each list corresponds to each list of known words
     """
     return [count_set_ops(ops_set, source) for ops_set in all_operators]
+
+
+def extract_event_samples(source: str) -> List[str]:
+    """
+    Extracts the event samples from the given source string
+    :param source: text in which the samples must be found
+    :return: list of samples
+    """
+    return re.findall(r'{.*?}', source)
+
+
+def extract_events(source: str) -> List[str]:
+    """
+    Extracts the events from the given source string
+    :param source: text in which the events must be found
+    :return: list of events
+    """
+    source = source[1:-1]
+    return [event for event in source.split("|")]
+
+
+def extract_sampled_events(source: str) -> List[List[str]]:
+    """
+    Extracts the samples and for each, the respective events,
+     from the given source string
+    :param source: text in which the events must be found
+    :return: list of lists of events
+    """
+    samples = extract_event_samples(source)
+    return [extract_events(sample) for sample in samples]
