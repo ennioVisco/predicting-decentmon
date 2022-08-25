@@ -1,6 +1,7 @@
 import re
 from typing import List
 
+op_sets = ["grounds", "atoms", "classic_operators", "temporal_operators"]
 grounds = ["True", "False"]
 atoms = ["Var"]
 classic_operators = ["And", "Or", "Neg", "Imp", "Iff", "Xor"]
