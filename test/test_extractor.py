@@ -43,7 +43,6 @@ class TestExtractor(unittest.TestCase):
     def tests_can_extract_right_events_per_sample(self):
         samples = extract_event_samples(self.test_trace)
         events = extract_events(samples[0])
-        print(events)
         self.assertEqual(3, len(events))
         self.assertEqual("a", events[0])
         self.assertEqual("b", events[1])
@@ -51,7 +50,6 @@ class TestExtractor(unittest.TestCase):
 
     def tests_extract_all_sampled_events(self):
         events = extract_sampled_events(self.test_trace)
-        print(events)
         self.assertEqual(3, len(events))
         self.assertEqual(3, len(events[0]))
         self.assertEqual(3, len(events[1]))

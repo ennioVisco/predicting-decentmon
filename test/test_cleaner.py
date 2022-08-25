@@ -15,7 +15,6 @@ class TestCleaner(unittest.TestCase):
     def test_rename_column_works(self):
         renamed = rename(self.df, r"^numbers_(.*)", r"\1")
         self.assertEqual("2", renamed.columns[-1])
-        print(renamed)
 
     def test_rename_multi_columns(self):
         renamed = rename_list(self.df, [r"(.*)2", r"col"], [r"\1 1", r"row"])
