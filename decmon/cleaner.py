@@ -1,5 +1,4 @@
 from pandas import DataFrame
-from typing import List
 
 
 def rename(df: DataFrame, find: str, replace: str, regex=True) -> DataFrame:
@@ -16,7 +15,7 @@ def rename(df: DataFrame, find: str, replace: str, regex=True) -> DataFrame:
     return new_df
 
 
-def rename_list(df: DataFrame, find: List[str], replace: List[str]) \
+def rename_list(df: DataFrame, find: list[str], replace: list[str]) \
         -> DataFrame:
     """
     Returns a copy of the dataframe where the given column patterns are renamed.

@@ -1,5 +1,4 @@
 import re
-from typing import List
 
 op_sets = ["grounds", "atoms", "classic_operators", "temporal_operators"]
 grounds = ["True", "False"]
@@ -19,7 +18,7 @@ def count_op(op: str, source: str) -> int:
     return len(re.findall(op, source))
 
 
-def count_set_ops(ops_set: List[str], source: str) -> List[int]:
+def count_set_ops(ops_set: list[str], source: str) -> list[int]:
     """
     Counts the given list of words in the given source string
     :param ops_set: set of words to match
@@ -30,7 +29,7 @@ def count_set_ops(ops_set: List[str], source: str) -> List[int]:
     return [count_op(op, source) for op in ops_set]
 
 
-def count_all_ops(source: str) -> List[List[int]]:
+def count_all_ops(source: str) -> list[list[int]]:
     """
     Counts all the known words in the given source string
     :param source: text in which the words must be found
@@ -40,7 +39,7 @@ def count_all_ops(source: str) -> List[List[int]]:
     return [count_set_ops(ops_set, source) for ops_set in all_operators]
 
 
-def extract_event_samples(source: str) -> List[str]:
+def extract_event_samples(source: str) -> list[str]:
     """
     Extracts the event samples from the given source string
     :param source: text in which the samples must be found
@@ -49,7 +48,7 @@ def extract_event_samples(source: str) -> List[str]:
     return re.findall(r'{.*?}', source)
 
 
-def extract_events(source: str) -> List[str]:
+def extract_events(source: str) -> list[str]:
     """
     Extracts the events from the given source string
     :param source: text in which the events must be found
@@ -59,7 +58,7 @@ def extract_events(source: str) -> List[str]:
     return [event for event in source.split("|")]
 
 
-def extract_sampled_events(source: str) -> List[List[str]]:
+def extract_sampled_events(source: str) -> list[list[str]]:
     """
     Extracts the samples and for each, the respective events,
      from the given source string
