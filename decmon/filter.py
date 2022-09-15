@@ -1,7 +1,7 @@
-import pandas as pd
+from pandas import DataFrame
 
 
-def exclude_annotate(data: pd.DataFrame, exclude: list[str] | str,
+def exclude_annotate(data: DataFrame, exclude: list[str] | str,
                      annotate: str):
     to_return = data.copy()
     if isinstance(exclude, str):
@@ -15,7 +15,7 @@ def exclude_annotate(data: pd.DataFrame, exclude: list[str] | str,
     return to_return
 
 
-def select_metric(df: pd.DataFrame, metric: str):
+def select_metric(df: DataFrame, metric: str):
     """
     Selects the given column metric to the pair of columns (metric, value)
     :param df: the dataframe having the current metric

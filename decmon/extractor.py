@@ -1,4 +1,4 @@
-import re
+from re import findall
 
 op_sets = ["grounds", "atoms", "classic_operators", "temporal_operators"]
 grounds = ["True", "False"]
@@ -15,7 +15,7 @@ def count_op(op: str, source: str) -> int:
     :param source: the text in which the word must be found
     :return: the number of occurrences of the word
     """
-    return len(re.findall(op, source))
+    return len(findall(op, source))
 
 
 def count_set_ops(ops_set: list[str], source: str) -> list[int]:
@@ -45,7 +45,7 @@ def extract_event_samples(source: str) -> list[str]:
     :param source: text in which the samples must be found
     :return: list of samples
     """
-    return re.findall(r'{.*?}', source)
+    return findall(r'{.*?}', source)
 
 
 def extract_events(source: str) -> list[str]:
