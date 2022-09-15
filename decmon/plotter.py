@@ -23,8 +23,7 @@ def plot_grid_barplots(df: pd.DataFrame, grid_cell_field: str,
         sns.barplot, x_axis, y_axis,
         order=order,
         errorbar=_BAR_INTERVAL,
-        palette=_COLOR_PALETTE,
-        width=8
+        palette=_COLOR_PALETTE
     )
     return fig
 
