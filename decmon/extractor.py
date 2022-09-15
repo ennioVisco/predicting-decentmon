@@ -67,3 +67,23 @@ def extract_sampled_events(source: str) -> list[list[str]]:
     """
     samples = extract_event_samples(source)
     return [extract_events(sample) for sample in samples]
+
+
+def convert_event_to_int(label: str):
+    """
+    We categorize observed events
+    :param label: observed events
+    :return: integer encoding of the event
+    """
+    if label == 'a':
+        return 1
+    elif label == 'b':
+        return 2
+    elif label == 'c':
+        return 3
+    else:
+        return 0
+
+
+def flatten_once(ls: list[list]):
+    return [item for sublist in ls for item in sublist]
