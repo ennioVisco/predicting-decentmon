@@ -63,3 +63,18 @@ class TestExtractor(unittest.TestCase):
         self.assertEqual("a", events[2][0])
         self.assertEqual(" ", events[2][1])
         self.assertEqual(" ", events[2][2])
+
+    def tests_can_convert_alphabet_item_to_int(self):
+        event = convert_event_to_int('a')
+        self.assertEqual(1, event)
+
+    def tests_can_flatten_list(self):
+        input_list = [[1, 2], [3, 4], [5, 6]]
+        flattened = flatten_once(input_list)
+        self.assertEqual(6, len(flattened))
+        self.assertEqual(input_list[0][0], flattened[0])
+        self.assertEqual(input_list[0][1], flattened[1])
+        self.assertEqual(input_list[1][0], flattened[2])
+        self.assertEqual(input_list[1][1], flattened[3])
+        self.assertEqual(input_list[2][0], flattened[4])
+        self.assertEqual(input_list[2][1], flattened[5])

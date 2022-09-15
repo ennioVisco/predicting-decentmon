@@ -19,13 +19,17 @@ def plot_grid_barplots(df: pd.DataFrame, grid_cell_field: str,
     """
     g = sns.FacetGrid(df, col=grid_cell_field, sharey=False)
     # plt.ylim(0, 5000)
-    fig = g.map(sns.barplot, x_axis, y_axis,
-                order=order, errorbar=_BAR_INTERVAL, palette=_COLOR_PALETTE)
-    fig.savefig("out.png")
+    fig = g.map(
+        sns.barplot, x_axis, y_axis,
+        order=order,
+        errorbar=_BAR_INTERVAL,
+        palette=_COLOR_PALETTE,
+        width=8
+    )
     return fig
 
 
-def plot_barplot(df):
+def plot_barplot(df: pd.DataFrame):
     """
     Plots the data from a single-strategy dataframe
     :param df: single-strategy dataframe
@@ -35,7 +39,10 @@ def plot_barplot(df):
         # ax=ax,
         data=df,
         kind="bar",
-        errorbar=_BAR_INTERVAL, palette=_COLOR_PALETTE, alpha=.8, height=6
+        errorbar=_BAR_INTERVAL,
+        palette=_COLOR_PALETTE,
+        alpha=.8,
+        height=6
     )
     fig.set_axis_labels("", "Count")
     return fig

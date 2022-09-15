@@ -69,7 +69,7 @@ def extract_sampled_events(source: str) -> list[list[str]]:
     return [extract_events(sample) for sample in samples]
 
 
-def convert_event_to_int(label: str):
+def convert_event_to_int(label: str) -> int:
     """
     We categorize observed events
     :param label: observed events
@@ -85,5 +85,10 @@ def convert_event_to_int(label: str):
         return 0
 
 
-def flatten_once(ls: list[list]):
+def flatten_once(ls: list[list]) -> list:
+    """
+    Flattens a list of lists, not recursively
+    :param ls: list of lists of elements to flatten
+    :return: a list of elements
+    """
     return [item for sublist in ls for item in sublist]
