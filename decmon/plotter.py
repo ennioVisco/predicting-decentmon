@@ -1,5 +1,5 @@
 from pandas import DataFrame
-from seaborn import FacetGrid, catplot, barplot
+from seaborn import FacetGrid, catplot, barplot, boxplot
 
 _COLOR_PALETTE = "dark"
 _BAR_INTERVAL = "sd"     # as of Standard Deviation
@@ -43,4 +43,23 @@ def plot_barplot(df: DataFrame):
         height=6
     )
     fig.set_axis_labels("", "Count")
+    return fig
+
+
+def plot_boxplot(df: DataFrame):
+    """
+    Plots the data from a single-strategy dataframe
+    :param df: single-strategy dataframe
+    :return: nothing. Plots the data
+    """
+    fig = boxplot(
+        # ax=ax,
+        data=df,
+        # kind="bar",
+        # errorbar=_BAR_INTERVAL,
+        palette=_COLOR_PALETTE,
+        # alpha=.8,
+        # height=6
+    )
+    # fig.set_axis_labels("", "Count")
     return fig

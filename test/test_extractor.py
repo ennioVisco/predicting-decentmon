@@ -78,3 +78,47 @@ class TestExtractor(unittest.TestCase):
         self.assertEqual(input_list[1][1], flattened[3])
         self.assertEqual(input_list[2][0], flattened[4])
         self.assertEqual(input_list[2][1], flattened[5])
+
+    test_unary_formula = "Next (Var \"b\")"
+    test_binary_formula = "Until (Var \"b\", Var \"a\")"
+
+    def tests_correct_binary_detection(self):
+        encoded = tree_as_array(self.test_binary_formula)
+        self.assertEqual(3, len(encoded))
+        self.assertEqual(["Until", "Var \"b\"", "Var \"a\""], encoded)
+
+    def tests_correct_unary_detection(self):
+        encoded = tree_as_array(self.test_unary_formula)
+        self.assertEqual(3, len(encoded))
+        self.assertEqual(["Next", "Var \"b\"", "0"], encoded)
+
+    def tests_correct_op_encoding(self):
+        to_encode = ["Next", "Var \"b\"", "0"]
+        encoded = encode_tree(to_encode)
+        self.assertEqual(11, encoded[0])
+        self.assertEqual(3, encoded[1])
+        self.assertEqual(0, encoded[2])
+
+    def tests_correct_atom_encoding(self):
+        to_encode = "Var \"b\""
+        encoded = encode_tree(tree_as_array(to_encode))
+        self.assertEqual(1, len(encoded))
+
+    def test_nested_formula_correctly_encoded(self):
+        encoded = encode_tree(tree_as_array(self.test_string))
+        self.assertEqual([10, 12, 3, 0, 4, 3, 3], encoded)
+
+    def test_nested_formula_correctly_encoded_alternative(self):
+        to_encode = "Ev (And (Var \"a\", Var \"b\"))"
+        encoded = encode_ops(to_encode)
+        self.assertEqual([12, 4, 3, 3, 0], encoded)
+
+    def test_no_out_most_comma(self):
+        to_encode = "Next (Var \"a\")"
+        encoded = find_outmost_comma(to_encode)
+        self.assertEqual(None, encoded)
+
+    def test_no_out_most_comma1(self):
+        to_encode = "Var \"a\""
+        encoded = find_outmost_comma(to_encode)
+        self.assertEqual(None, encoded)
