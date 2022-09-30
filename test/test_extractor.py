@@ -96,7 +96,7 @@ class TestExtractor(unittest.TestCase):
         to_encode = ["Next", "Var \"b\"", "0"]
         encoded = encode_tree(to_encode)
         self.assertEqual(11, encoded[0])
-        self.assertEqual(3, encoded[1])
+        self.assertEqual(-2, encoded[1])
         self.assertEqual(0, encoded[2])
 
     def tests_correct_atom_encoding(self):
@@ -106,12 +106,12 @@ class TestExtractor(unittest.TestCase):
 
     def test_nested_formula_correctly_encoded(self):
         encoded = encode_tree(tree_as_array(self.test_string))
-        self.assertEqual([10, 12, 3, 0, 4, 3, 3], encoded)
+        self.assertEqual([10, 12, -2, 0, 4, -3, -1], encoded)
 
     def test_nested_formula_correctly_encoded_alternative(self):
         to_encode = "Ev (And (Var \"a\", Var \"b\"))"
         encoded = encode_ops(to_encode)
-        self.assertEqual([12, 4, 3, 3, 0], encoded)
+        self.assertEqual([12, 4, -1, -2, 0], encoded)
 
     def test_no_out_most_comma(self):
         to_encode = "Next (Var \"a\")"
@@ -122,3 +122,14 @@ class TestExtractor(unittest.TestCase):
         to_encode = "Var \"a\""
         encoded = find_outmost_comma(to_encode)
         self.assertEqual(None, encoded)
+
+    def test_parse_event_basic(self):
+        to_encode = "Var \"a\""
+        encoded = parse_event(to_encode)
+        self.assertEqual(-1, encoded)
+
+    def test_parse_event_nested(self):
+        to_encode = "Next (Var \"a\")"
+        encoded = encode_ops(to_encode)
+        print(encoded)
+        self.assertEqual([11, -1, 0], encoded)

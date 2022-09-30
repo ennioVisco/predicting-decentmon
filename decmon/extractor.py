@@ -69,20 +69,9 @@ def extract_sampled_events(source: str) -> list[list[str]]:
     return [extract_events(sample) for sample in samples]
 
 
-def convert_event_to_int(label: str) -> int:
-    """
-    We categorize observed events
-    :param label: observed events
-    :return: integer encoding of the event
-    """
-    if label == 'a':
-        return 1
-    elif label == 'b':
-        return 2
-    elif label == 'c':
-        return 3
-    else:
-        return 0
+############################################
+#   FORMULA ENCODING FUNCTIONS             #
+############################################
 
 
 def flatten_once(ls: list[list]) -> list:
@@ -118,7 +107,7 @@ def tree_as_array(source: str) -> list[str]:
     :param source: text to encode
     :return: list of integers
     """
-    if convert_op_to_int(source) == 3 or convert_op_to_int(source) == 0:
+    if convert_op_to_int(source) <= 0:
         return [source]
 
     left, right = split_op(source)
@@ -177,7 +166,7 @@ def convert_op_to_int(op: str) -> int:
     elif op == 'False':
         return 2
     elif match(r'Var "\w+"', op):
-        return 3
+        return parse_event(op)
     elif op == 'And':
         return 4
     elif op == 'Or':
@@ -203,4 +192,30 @@ def convert_op_to_int(op: str) -> int:
     elif op == 'Wuntil':
         return 15
     else:
-        return -1
+        return 3
+
+
+def parse_event(event: str) -> int:
+    """
+    Parses the given event
+    :param event: event to parse
+    :return: parsed event
+    """
+    _, right = event.split(" ", 1)
+    return - convert_event_to_int(right[1:-1])
+
+
+def convert_event_to_int(label: str) -> int:
+    """
+    We categorize observed events
+    :param label: observed events
+    :return: integer encoding of the event
+    """
+    if label == 'a':
+        return 1
+    elif label == 'b':
+        return 2
+    elif label == 'c':
+        return 3
+    else:
+        raise ValueError("Unknown event: " + label)
