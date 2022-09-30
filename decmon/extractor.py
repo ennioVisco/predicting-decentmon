@@ -218,4 +218,5 @@ def convert_event_to_int(label: str) -> int:
     elif label == 'c':
         return 3
     else:
-        raise ValueError("Unknown event: " + label)
+        return 0    # TODO: used by trace encoding,
+                    # can end in inf loop with formula, needs refactoring
