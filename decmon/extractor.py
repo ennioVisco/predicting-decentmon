@@ -7,6 +7,8 @@ classic_operators = ["And", "Or", "Neg", "Imp", "Iff", "Xor"]
 temporal_operators = ["Until", "Next", "Ev", "Glob", "Previous", "Wuntil"]
 all_operators = [grounds, atoms, classic_operators, temporal_operators]
 
+ALPHABET_OFFSET = 96
+
 
 def count_op(op: str, source: str) -> int:
     """
@@ -202,7 +204,7 @@ def parse_event(event: str) -> int:
     :return: parsed event
     """
     _, right = event.split(" ", 1)
-    return - convert_event_to_int(right[1:-1])
+    return convert_event_to_int(right[1:-1])
 
 
 def convert_event_to_int(label: str) -> int:
@@ -211,12 +213,12 @@ def convert_event_to_int(label: str) -> int:
     :param label: observed events
     :return: integer encoding of the event
     """
-    if label == 'a':
-        return 1
-    elif label == 'b':
-        return 2
-    elif label == 'c':
-        return 3
-    else:
-        return 0    # TODO: used by trace encoding,
-                    # can end in inf loop with formula, needs refactoring
+    value = ord(label) - ALPHABET_OFFSET
+    print("Event: " + label + " -> " + str(-value))
+    if value < 0 or value > 25:
+        raise Exception("Invalid event label: " + label)
+    return - value
+    # else:
+    #     return 0    # TODO: used by trace encoding, was only considering
+    #                 # events like a, b, or c.
+    #                 # can end in inf loop with formula, needs refactoring

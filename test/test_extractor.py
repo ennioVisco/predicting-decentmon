@@ -66,7 +66,7 @@ class TestExtractor(unittest.TestCase):
 
     def tests_can_convert_alphabet_item_to_int(self):
         event = convert_event_to_int('a')
-        self.assertEqual(1, event)
+        self.assertEqual(-1, event)
 
     def tests_can_flatten_list(self):
         input_list = [[1, 2], [3, 4], [5, 6]]

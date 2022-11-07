@@ -1,5 +1,7 @@
 from pandas import DataFrame
 
+from decmon.cleaner import rename
+
 
 def exclude_annotate(data: DataFrame, exclude: list[str] | str,
                      annotate: str):
@@ -27,3 +29,15 @@ def select_metric(df: DataFrame, metric: str):
     new_df['metric'] = metric
     new_df = new_df.rename(columns={metric: "value"})
     return new_df
+
+
+def split_by_dictionary(df: DataFrame, strategies: dict[str, str]) \
+        -> list[DataFrame]:
+    ddf = []
+    for key, name in strategies.items():
+        others = {x: strategies[x] for x in strategies if x != key}
+        other_keys = list(others.keys())
+        local = rename(df, fr"^{key}_(.*)", r"\1")
+        local = exclude_annotate(local, exclude=other_keys, annotate=name)
+        ddf.append(local)
+    return ddf
