@@ -40,9 +40,9 @@ def split_by_dictionary(df: DataFrame, strategies: dict[str, str]) \
         -> list[DataFrame]:
     """
     Splits the dataframe by the given dictionary of strategies.
-    :param df:
-    :param strategies:
-    :return:
+    :param df: the dataframe to split
+    :param strategies: the dictionary of strategies
+    :return: a list of dataframes, each one having the given strategy
     """
     ddf = []
     for key, name in strategies.items():
