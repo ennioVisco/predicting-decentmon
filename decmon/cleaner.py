@@ -31,3 +31,15 @@ def rename_list(df: DataFrame, find: list[str], replace: list[str]) \
     for i in elements:
         new_df = rename(new_df, find[i], replace[i])
     return new_df
+
+
+def drop_columns(df: DataFrame, columns: list[str]) -> DataFrame:
+    """
+    Returns a copy of the dataframe where the given columns are dropped
+    :param df: source dataframe to copy
+    :param columns: list of columns to drop
+    :return: a copy of the original dataframe
+    """
+    new_df = df.copy()
+    new_df.drop(columns, axis=1, inplace=True)
+    return new_df
