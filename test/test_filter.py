@@ -20,7 +20,7 @@ class TestCleaner(unittest.TestCase):
 
     def test_filter_numbers_as_strategy(self):
         match = "numbers"
-        filtered = exclude_annotate(self.df, match, match)
+        filtered = exclude_annotate(self.df, list(match), match)
         self.assertEqual(2, len(filtered.columns))
         self.assertEqual("strategy", filtered.columns[-1])
         self.assertNotIn(match, filtered.columns[0])

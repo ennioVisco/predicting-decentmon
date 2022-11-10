@@ -2,7 +2,7 @@ import unittest
 
 import pandas as pd
 
-from decmon.cleaner import rename, rename_list
+from decmon.cleaner import rename, rename_list, drop_columns
 
 
 class TestCleaner(unittest.TestCase):
@@ -20,3 +20,8 @@ class TestCleaner(unittest.TestCase):
         renamed = rename_list(self.df, [r"(.*)2", r"col"], [r"\1 1", r"row"])
         self.assertEqual("numbers_ 1", renamed.columns[-1])
         self.assertEqual("rowors", renamed.columns[-2])
+
+    def test_drop_columns(self):
+        dropped = drop_columns(self.df, ["numbers"])
+        self.assertEqual("colors", dropped.columns[0])
+        self.assertEqual(2, len(dropped.columns))

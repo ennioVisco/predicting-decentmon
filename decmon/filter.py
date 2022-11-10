@@ -1,23 +1,28 @@
 from pandas import DataFrame
 
-from decmon.cleaner import rename
+from decmon.cleaner import rename, drop_columns
 
 
-def exclude_annotate(data: DataFrame, exclude: list[str] | str,
-                     annotate: str):
-    to_return = data.copy()
-    if isinstance(exclude, str):
-        exclude = [exclude]
-
+def exclude_annotate(df: DataFrame, exclude: list[str], annotate: str)\
+        -> DataFrame:
+    """
+    Excludes the given columns from the dataframe and annotates the dataframe
+    with an extra column having the given annotation.
+    :param df: the dataframe to process
+    :param exclude: the columns to exclude
+    :param annotate: the annotation to add
+    :return: a copy of the original dataframe
+    """
+    to_return = df.copy()
     for e in exclude:
         filtered = to_return.filter(regex=f"^{e}.*", axis=1)
-        to_return = to_return.drop(filtered.columns, axis=1)
+        to_return = drop_columns(to_return, filtered.columns)
 
     to_return['strategy'] = annotate
     return to_return
 
 
-def select_metric(df: DataFrame, metric: str):
+def select_metric(df: DataFrame, metric: str) -> DataFrame:
     """
     Selects the given column metric to the pair of columns (metric, value)
     :param df: the dataframe having the current metric
@@ -33,6 +38,12 @@ def select_metric(df: DataFrame, metric: str):
 
 def split_by_dictionary(df: DataFrame, strategies: dict[str, str]) \
         -> list[DataFrame]:
+    """
+    Splits the dataframe by the given dictionary of strategies.
+    :param df:
+    :param strategies:
+    :return:
+    """
     ddf = []
     for key, name in strategies.items():
         others = {x: strategies[x] for x in strategies if x != key}

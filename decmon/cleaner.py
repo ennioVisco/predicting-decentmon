@@ -1,4 +1,4 @@
-from pandas import DataFrame
+from pandas import DataFrame, Index
 
 
 def rename(df: DataFrame, find: str, replace: str, regex=True) -> DataFrame:
@@ -33,7 +33,7 @@ def rename_list(df: DataFrame, find: list[str], replace: list[str]) \
     return new_df
 
 
-def drop_columns(df: DataFrame, columns: list[str]) -> DataFrame:
+def drop_columns(df: DataFrame, columns: list[str] | Index = None) -> DataFrame:
     """
     Returns a copy of the dataframe where the given columns are dropped
     :param df: source dataframe to copy

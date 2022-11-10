@@ -131,5 +131,4 @@ class TestExtractor(unittest.TestCase):
     def test_parse_event_nested(self):
         to_encode = "Next (Var \"a\")"
         encoded = encode_ops(to_encode)
-        print(encoded)
         self.assertEqual([11, -1, 0], encoded)
