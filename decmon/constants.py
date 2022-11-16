@@ -1,4 +1,5 @@
 INPUT_DIR = "input"
+OUTPUT_DIR = "output"
 
 STRATEGIES = {
     "cent": "orchestration",
