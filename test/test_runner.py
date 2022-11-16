@@ -1,12 +1,18 @@
 import unittest
 
-from decmon.runner import prepare_patterns, full_cmd, output, run, print_output
+from decmon.runner import prepare_patterns, full_cmd, output, run, print_output, \
+    alphabet
 
 
 class TestRunner(unittest.TestCase):
     sample_patterns = [
         ['-first', 'false'],
     ]
+
+    def test_prepares_alphabet_correctly(self):
+        result = alphabet(3)
+        self.assertEqual('-dalpha', result[0])
+        self.assertEqual('{a|b|c}', result[1])
 
     def test_can_prepare_patterns(self):
         result = prepare_patterns(0, self.sample_patterns)
@@ -22,7 +28,7 @@ class TestRunner(unittest.TestCase):
         self.assertEqual('irrelevant_output.log', result[1])
 
     def test_final_command_to_run_is_complete(self):
-        command = full_cmd("irrelevant", 0)
+        command = full_cmd("irrelevant", 0, 3)
         self.assertEqual('dune',    command[0])
         self.assertEqual('-n',      command[10])
         self.assertEqual('-abs',    command[20])
