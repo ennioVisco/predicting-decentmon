@@ -236,19 +236,9 @@ def convert_op_to_int(op: str) -> int:
     elif op == 'Wuntil':
         return 15
     elif match(r'Var "\w+"', op):
-        return parse_event(op)
+        return convert_event_to_int(op[5:-1])
     else:
         return 3
-
-
-def parse_event(event: str) -> int:
-    """
-    Parses the given event
-    :param event: event to parse
-    :return: parsed event
-    """
-    _, right = event.split(" ", 1)
-    return convert_event_to_int(right[1:-1])
 
 
 def convert_event_to_int(label: str) -> int:

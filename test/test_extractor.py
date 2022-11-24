@@ -125,19 +125,21 @@ class TestExtractor(unittest.TestCase):
 
     def test_parse_event_basic(self):
         to_encode = "Var \"a\""
-        encoded = parse_event(to_encode)
-        self.assertEqual(-1, encoded)
+        encoded = encode_ops(to_encode)
+        self.assertEqual([-1], encoded)
 
     def test_parse_event_nested(self):
         to_encode = "Next (Var \"a\")"
         encoded = encode_ops(to_encode)
         self.assertEqual([11, -1, 0], encoded)
 
+    @unittest.skip(reason="Enable this only for performance testing")
     def test_performance_extraction_old(self):
         for i in range(100000):
             encode_tree(tree_as_array(self.test_formula))
         self.assertEqual(1, 1)
 
+    @unittest.skip(reason="Enable this only for performance testing")
     def test_performance_extraction_new(self):
         for i in range(100000):
             encode_tree(tree_as_array_new(self.test_formula))
