@@ -1,5 +1,7 @@
-from pandas import DataFrame
+from pandas import DataFrame, concat
 from seaborn import FacetGrid, catplot, barplot, boxplot
+
+from decmon.constants import METRICS
 
 _COLOR_PALETTE = "dark"
 _BAR_INTERVAL = "sd"     # as of Standard Deviation
@@ -63,3 +65,17 @@ def plot_boxplot(df: DataFrame):
     )
     # fig.set_axis_labels("", "Count")
     return fig
+
+
+def plot_metrics_by_patterns(dfs: [DataFrame]):
+    df = concat(dfs)
+    df['metric'] = df['metric'].replace(METRICS.keys(), METRICS.values())
+
+    g = FacetGrid(df, col="metric", sharey=False)
+    g.fig.suptitle('Mean, and std. dev. by metric, for each pattern',
+                   fontsize=14)
+
+    g.map_dataframe(barplot, x='pattern', y='value', hue='strategy',
+                    palette='bright')
+    g.add_legend()
+    return g
