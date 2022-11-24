@@ -4,33 +4,33 @@ from decmon.extractor import *
 
 
 class TestExtractor(unittest.TestCase):
-    test_string = 'Until (Ev (Var "b"), And (Var "c", Var "a"))'
+    test_formula = 'Until (Ev (Var "b"), And (Var "c", Var "a"))'
     test_trace = "{a|b| } ; { | | } ; {a| | }"
 
     def tests_it_works(self):
         self.assertEqual(True, True)
 
     def tests_finds_single_op(self):
-        self.assertEqual(1, count_op("Until", self.test_string))
+        self.assertEqual(1, count_op("Until", self.test_formula))
 
     def tests_finds_multiple_ops(self):
-        self.assertEqual(3, count_op("Var", self.test_string))
+        self.assertEqual(3, count_op("Var", self.test_formula))
 
     def tests_finds_temporal_ops(self):
-        actual_sum = sum(count_set_ops(temporal_operators, self.test_string))
+        actual_sum = sum(count_set_ops(temporal_operators, self.test_formula))
         self.assertEqual(2, actual_sum)
 
     def tests_finds_classic_ops(self):
-        actual_sum = sum(count_set_ops(classic_operators, self.test_string))
+        actual_sum = sum(count_set_ops(classic_operators, self.test_formula))
         self.assertEqual(1, actual_sum)
 
     def tests_finds_all_ops(self):
-        ops_counts = count_all_ops(self.test_string)
+        ops_counts = count_all_ops(self.test_formula)
         clustered_ops_counts = list(map(sum, ops_counts))
         self.assertEqual(6, sum(clustered_ops_counts))
 
     def tests_finds_all_the_right_ops(self):
-        ops_counts = count_all_ops(self.test_string)
+        ops_counts = count_all_ops(self.test_formula)
         self.assertEqual([0, 0], ops_counts[0])
         self.assertEqual([3], ops_counts[1])
         self.assertEqual([1, 0, 0, 0, 0, 0], ops_counts[2])
@@ -105,7 +105,7 @@ class TestExtractor(unittest.TestCase):
         self.assertEqual(1, len(encoded))
 
     def test_nested_formula_correctly_encoded(self):
-        encoded = encode_tree(tree_as_array(self.test_string))
+        encoded = encode_tree(tree_as_array(self.test_formula))
         self.assertEqual([10, 12, -2, 0, 4, -3, -1], encoded)
 
     def test_nested_formula_correctly_encoded_alternative(self):
@@ -132,3 +132,13 @@ class TestExtractor(unittest.TestCase):
         to_encode = "Next (Var \"a\")"
         encoded = encode_ops(to_encode)
         self.assertEqual([11, -1, 0], encoded)
+
+    def test_performance_extraction_old(self):
+        for i in range(100000):
+            encode_tree(tree_as_array(self.test_formula))
+        self.assertEqual(1, 1)
+
+    def test_performance_extraction_new(self):
+        for i in range(100000):
+            encode_tree(tree_as_array_new(self.test_formula))
+        self.assertEqual(1, 1)

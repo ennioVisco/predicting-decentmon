@@ -94,6 +94,15 @@ def encode_ops(source: str) -> list[int]:
     return encode_tree(tree_as_array(source.strip()))
 
 
+def encode_ops_new(source: str) -> list[int]:
+    """
+    Encodes the given source string in a list of integers
+    :param source: text to encode
+    :return: list of integers
+    """
+    return encode_tree(tree_as_array_new(source.strip()))
+
+
 def encode_tree(source: list[str]) -> list[int]:
     """
     Encodes the given source string in a list of integers
@@ -109,12 +118,47 @@ def tree_as_array(source: str) -> list[str]:
     :param source: text to encode
     :return: list of integers
     """
-    if convert_op_to_int(source) <= 0:
-        return [source]
+    op, operand = split_outermost_op(source)
+    if operand is None:
+        return op
 
-    left, right = split_op(source)
-    inner_left, inner_right = split_internal_op(right)
-    return [left] + tree_as_array(inner_left) + tree_as_array(inner_right)
+    inner = split_internal_op(operand)
+    return op + tree_as_array(inner[0]) + tree_as_array(inner[1])
+
+
+def split_outermost_op(op: str) -> ([str], str | None):
+    if convert_op_to_int(op) <= 0:
+        return [op], None
+    external_op, operand = split_op(op)
+    return [external_op], operand
+
+
+def tree_as_array_new(source: str) -> list[str]:
+    """
+    Encodes the given source string in a list of integers
+    :param source: text to encode
+    :return: list of integers
+    """
+    op, operand = split_outermost_op(source)
+    if operand is None:
+        return op
+
+    return op + internal_loop(operand)
+
+
+def internal_loop(source: str) -> list[str]:
+    to_return = []
+    operands = split_internal_op(source)
+
+    while len(operands) > 0:
+        current = operands.pop(0)
+        op, operand = split_outermost_op(current)
+
+        if operand is not None:
+            operands = split_internal_op(operand) + operands
+
+        to_return += op
+    return to_return
 
 
 def split_op(op: str) -> (str, str):
@@ -127,16 +171,16 @@ def split_op(op: str) -> (str, str):
     return split[0], split[1]
 
 
-def split_internal_op(op: str) -> (str, str):
+def split_internal_op(op: str) -> [str]:
     """
     Splits the given operator in a list of its arguments
     :param op: operator to split
     :return: list of arguments
     """
-    split = find_outmost_comma(op)
-    if split is None:
-        return op[1:-1], "0"
-    return op[1:split], op[split + 2:-1]
+    split_at = find_outmost_comma(op)
+    if split_at is None:
+        return [op[1:-1]] + ["0"]
+    return [op[1:split_at], op[split_at + 2:-1]]
 
 
 def find_outmost_comma(source: str) -> int | None:
@@ -167,8 +211,6 @@ def convert_op_to_int(op: str) -> int:
         return 1
     elif op == 'False':
         return 2
-    elif match(r'Var "\w+"', op):
-        return parse_event(op)
     elif op == 'And':
         return 4
     elif op == 'Or':
@@ -193,6 +235,8 @@ def convert_op_to_int(op: str) -> int:
         return 14
     elif op == 'Wuntil':
         return 15
+    elif match(r'Var "\w+"', op):
+        return parse_event(op)
     else:
         return 3
 

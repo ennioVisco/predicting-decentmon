@@ -7,9 +7,9 @@ STRATEGIES = {
     "odecent": "choreography"
 }
 
-METRICS = [
-    "trace_len",
-    "num_mess",
-    "size_mess",
-    "nb_progressions"
-]
+METRICS = {
+    "trace_len": "Trace Length",
+    "num_mess": "Number of Messages",
+    "size_mess": "Size of Messages",
+    "nb_progressions": "Number of Progressions",
+}

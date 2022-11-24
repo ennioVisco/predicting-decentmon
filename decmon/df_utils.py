@@ -3,7 +3,7 @@ from ast import literal_eval
 
 from decmon.cleaner import drop_columns
 from decmon.constants import METRICS
-from decmon.extractor import encode_ops, flatten_once, count_all_ops
+from decmon.extractor import encode_ops, encode_ops_new, flatten_once, count_all_ops
 from decmon.filter import select_metric
 
 
@@ -52,6 +52,26 @@ def extract_ops(df: DataFrame) -> (DataFrame, DataFrame):
     return encoded_ops, full_expansion
 
 
+def extract_ops_new(df: DataFrame) -> (DataFrame, DataFrame):
+    """
+    Extracts the operations from the given dataframe. This includes
+    the encoded operations within the full expansion of the formula.
+    :param df: dataframe to extract operations from
+    :return: dataframe with fully expanded formula and encoded operations
+    """
+    def map_ops(x): return str(encode_ops_new(x['formula']))
+    full_expansion = DataFrame(df['formula'])
+    full_expansion['total_ops_list'] = full_expansion.apply(map_ops, axis=1)
+
+    def generate_col(x): return col_gen(x, "total_ops_list")
+    encoded_ops = full_expansion.apply(generate_col, axis=1)
+
+    to_drop = ['total_ops_list', 'formula']
+    encoded_ops = drop_columns(encoded_ops, to_drop)
+
+    return encoded_ops, full_expansion
+
+
 def extract_ops_flattened(data: DataFrame) -> (DataFrame, DataFrame):
     def map_ops(x): return sum(flatten_once(count_all_ops(x['formula'])))
     full_expansion = DataFrame(data['formula'])
@@ -75,7 +95,7 @@ def extract_metrics(df: DataFrame) -> DataFrame:
     :return: dataframe with extra metric-related columns
     """
     metrics_data = []
-    for metric in METRICS:
+    for metric in METRICS.keys():
         metrics_data.append(select_metric(df, metric))
 
     merged_metrics = concat(metrics_data)
