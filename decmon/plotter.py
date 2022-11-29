@@ -1,7 +1,7 @@
 from pandas import DataFrame, concat
 from seaborn import FacetGrid, catplot, barplot, boxplot
 
-from decmon.constants import METRICS
+from decmon.constants import METRICS, PATTERNS
 
 _COLOR_PALETTE = "dark"
 _BAR_INTERVAL = "sd"     # as of Standard Deviation
@@ -79,3 +79,23 @@ def plot_metrics_by_patterns(dfs: [DataFrame]):
                     palette='bright')
     g.add_legend()
     return g
+
+
+def plot_metrics_by_components(df: DataFrame, metric: str):
+    # Draw a nested boxplot to show bills by day and time
+    ax = boxplot(x="nodes", y="value",
+                 hue="strategy", palette='bright', showfliers=False,
+                 data=df)
+    ax.set(title=f'Metric: {metric}')
+    # sns.despine(offset=10, trim=True)
+    ax.legend(bbox_to_anchor=(1.1, 0.95))
+    return ax
+
+
+def plot_temp_pattern_variance(dfs: [DataFrame]):
+    to_drop = ['formula_id', 'x']
+
+    for i in PATTERNS:
+        cleaned_up_data = dfs[i].drop(to_drop, axis=1)
+        plot = plot_boxplot(cleaned_up_data)
+    return plot

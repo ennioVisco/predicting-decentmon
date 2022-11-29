@@ -43,3 +43,15 @@ def drop_columns(df: DataFrame, columns: list[str] | Index = None) -> DataFrame:
     new_df = df.copy()
     new_df.drop(columns, axis=1, inplace=True)
     return new_df
+
+
+def add_column(df: DataFrame, column: str, value: any) -> DataFrame:
+    """
+    Adds a column to the given dataframe with the given value.
+    :param df: dataframe to add column to
+    :param column: column to add
+    :param value: value to add
+    :return: dataframe with added column
+    """
+    df[column] = value
+    return df

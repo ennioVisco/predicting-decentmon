@@ -1,6 +1,7 @@
 from pandas import DataFrame
 
-from decmon.cleaner import rename, drop_columns
+from decmon.cleaner import rename, drop_columns, add_column
+from decmon.constants import PATTERNS
 
 
 def exclude_annotate(df: DataFrame, exclude: list[str], annotate: str)\
@@ -52,3 +53,11 @@ def split_by_dictionary(df: DataFrame, strategies: dict[str, str]) \
         local = exclude_annotate(local, exclude=other_keys, annotate=name)
         ddf.append(local)
     return ddf
+
+
+def prepare_with_pattern(dfs: [DataFrame]) -> [DataFrame]:
+    dfs = [dfs[i].copy() for i in PATTERNS]
+    dfs = [add_column(dfs[i], 'pattern', i) for i in PATTERNS]
+    dfs = [dfs[i].drop(['formula_id'], axis=1) for i in PATTERNS]
+    dfs = [DataFrame(dfs[i]).reset_index() for i in PATTERNS]
+    return dfs

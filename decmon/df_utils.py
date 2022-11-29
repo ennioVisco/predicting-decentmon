@@ -82,3 +82,4 @@ def extract_metrics(df: DataFrame) -> DataFrame:
 
     merged_metrics = concat(metrics_data)
     return merged_metrics
+

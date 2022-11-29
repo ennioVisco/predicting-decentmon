@@ -13,3 +13,5 @@ METRICS = {
     "size_mess": "Size of Messages",
     "nb_progressions": "Number of Progressions",
 }
+
+PATTERNS = range(0, 8)
