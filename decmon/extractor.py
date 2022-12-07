@@ -94,15 +94,6 @@ def encode_ops(source: str) -> list[int]:
     return encode_tree(tree_as_array(source.strip()))
 
 
-def encode_ops_new(source: str) -> list[int]:
-    """
-    Encodes the given source string in a list of integers
-    :param source: text to encode
-    :return: list of integers
-    """
-    return encode_tree(tree_as_array_new(source.strip()))
-
-
 def encode_tree(source: list[str]) -> list[int]:
     """
     Encodes the given source string in a list of integers
@@ -131,34 +122,6 @@ def split_outermost_op(op: str) -> ([str], str | None):
         return [op], None
     external_op, operand = split_op(op)
     return [external_op], operand
-
-
-def tree_as_array_new(source: str) -> list[str]:
-    """
-    Encodes the given source string in a list of integers
-    :param source: text to encode
-    :return: list of integers
-    """
-    op, operand = split_outermost_op(source)
-    if operand is None:
-        return op
-
-    return op + internal_loop(operand)
-
-
-def internal_loop(source: str) -> list[str]:
-    to_return = []
-    operands = split_internal_op(source)
-
-    while len(operands) > 0:
-        current = operands.pop(0)
-        op, operand = split_outermost_op(current)
-
-        if operand is not None:
-            operands = split_internal_op(operand) + operands
-
-        to_return += op
-    return to_return
 
 
 def split_op(op: str) -> (str, str):
@@ -249,7 +212,7 @@ def convert_event_to_int(label: str) -> int:
     """
     value = ord(label) - ALPHABET_OFFSET
     if value < 0 or value > 25:
-        raise Exception("Invalid event label: " + label)
+        raise ValueError("Invalid event label: " + label)
     return - value
     # else:
     #     return 0    # TODO: used by trace encoding, was only considering

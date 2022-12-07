@@ -18,9 +18,9 @@ class TestCleaner(unittest.TestCase):
          })
 
     def test_prepare_learning_sets(self):
-        X_train, X_test, y_train, y_test = prepare_learning_sets(self.df, "id")
-        self.assertEqual(2, len(X_train))
-        self.assertEqual(1, len(X_test))
+        x_train, x_test, y_train, y_test = prepare_learning_sets(self.df, "id")
+        self.assertEqual(2, len(x_train))
+        self.assertEqual(1, len(x_test))
         self.assertEqual(2, len(y_train))
         self.assertEqual(1, len(y_test))
 
