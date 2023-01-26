@@ -15,8 +15,6 @@ scipy = "^1.9.1"
 jupyter = "^1.0.0"
 ipynb = "^0.5.1"
 
-[tool.poetry.dev-dependencies]
-
 [tool.poetry.group.dev.dependencies]
 coverage = "^6.4.4"
 

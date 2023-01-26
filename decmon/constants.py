@@ -1,6 +1,8 @@
 INPUT_DIR = "input"
 OUTPUT_DIR = "output"
 
+ALPHABET = list('abcdefghijklmnopqrstuvwxyz')
+
 STRATEGIES = {
     "cent": "orchestration",
     "decent": "migration",

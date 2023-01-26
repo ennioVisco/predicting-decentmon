@@ -4,6 +4,7 @@ from copy import deepcopy
 from datetime import datetime
 from subprocess import Popen, PIPE, STDOUT
 
+from decmon.constants import ALPHABET
 from decmon.extractor import flatten_once
 
 
@@ -34,7 +35,7 @@ formula_patterns = [
 
 
 def alphabet(n: int) -> list[str]:
-    letters = list('abcdefghijklmnopqrstuvwxyz')[0:n]
+    letters = ALPHABET[0:n]
     return ['-dalpha', f'{{{"|".join(letters)}}}']
 
 

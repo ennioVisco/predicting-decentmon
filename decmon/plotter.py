@@ -1,7 +1,10 @@
+import pandas as pd
+import matplotlib.pyplot as plt
 from pandas import DataFrame, concat
 from seaborn import FacetGrid, catplot, barplot, boxplot
 
-from decmon.constants import METRICS, PATTERNS
+from decmon.constants import METRICS, PATTERNS, ALPHABET
+from decmon.runner import formula_patterns
 
 _COLOR_PALETTE = "dark"
 _BAR_INTERVAL = "sd"     # as of Standard Deviation
@@ -99,3 +102,25 @@ def plot_temp_pattern_variance(dfs: [DataFrame]):
         cleaned_up_data = dfs[i].drop(to_drop, axis=1)
         plot = plot_boxplot(cleaned_up_data)
     return plot
+
+
+def plot_atoms_variation(dfs: [DataFrame], cap: int) -> [DataFrame]:
+    to_return = []
+    for i in PATTERNS:
+        target_df = dfs[i].transpose()
+        result = DataFrame()
+        for letter in range(1, cap + 1):
+            result[ALPHABET[letter - 1]] = target_df.where(target_df == -letter).count()
+        result = result.sort_index(key=result.sum(1).get, ascending=False)
+        result2 = DataFrame({'data': (result > 0).transpose().sum()})
+        result2 = DataFrame(result2['data'].value_counts())
+        result2 = result2.sort_index()
+
+        plt.plot(result2, label=f'{formula_patterns[i][0][1:]}')
+        to_return.append(result)
+    plt.ylabel('Identifier of the formula')
+    plt.xlabel('Number of unique atoms')
+    plt.title('Number of unique atoms per formula')
+    plt.legend(loc='upper right')
+    return to_return
+
