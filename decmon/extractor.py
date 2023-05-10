@@ -1,4 +1,4 @@
-from re import findall, match
+from re import findall, match, search, compile, Pattern
 
 op_sets = ["grounds", "atoms", "classic_operators", "temporal_operators"]
 grounds = ["True", "False"]
