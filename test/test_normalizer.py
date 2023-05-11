@@ -11,6 +11,7 @@ class TestNormalizer(unittest.TestCase):
     f4 = "Imp (a, b)"
     f5 = "Iff (a, b)"
     f6 = "And (Or (a, b), c)"
+    f7 = "Glob (a)"
     # Normalized formulas
     f1n = "Neg (And (Neg (a), Neg (b)))"
     f2n = "Neg (And (Neg (Neg (And (Neg (a), Neg (c)))), Neg (b)))"
@@ -18,6 +19,7 @@ class TestNormalizer(unittest.TestCase):
     f4n = "Neg (And (Neg (Neg (a)), Neg (b)))"
     f5n = "And (Neg (And (Neg (Neg (a)), Neg (b))), Neg (And (Neg (Neg (b)), Neg (a))))"
     f6n = "And (Neg (And (Neg (a), Neg (b))), c)"
+    f7n = "Neg (Until (True, Neg (a)))"
 
     def test_normalize_f1(self):
         self.assertEqual(self.f1n, normalize(self.f1))
@@ -36,3 +38,6 @@ class TestNormalizer(unittest.TestCase):
 
     def test_normalize_f6(self):
         self.assertEqual(self.f6n, normalize(self.f6))
+
+    def test_normalize_f7(self):
+        self.assertEqual(self.f7n, normalize(self.f7))

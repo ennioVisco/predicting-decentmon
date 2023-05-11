@@ -1,4 +1,4 @@
-from re import sub, search, compile, Pattern
+from re import compile, Pattern
 
 from decmon.extractor import split_internal_op
 
@@ -21,16 +21,16 @@ elif op == 'True':
         return 7
     elif op == 'Iff':
         return 8
+    elif op == 'Ev':
+        return 12
+    elif op == 'Glob':
+        return 13
     elif op == 'Xor':
         return 9
     elif op == 'Until':
         return 10
     elif op == 'Next':
         return 11
-    elif op == 'Ev':
-        return 12
-    elif op == 'Glob':
-        return 13
     elif op == 'Previous':
         return 14
     elif op == 'Wuntil':
@@ -56,15 +56,37 @@ def normalize(formula: str) -> str:
     if matches is not None:
         return normalize_iff(matches.group(1), matches.group(2))
 
-    # Basic operators
+    matches = binary_op("Xor").fullmatch(formula)
+    if matches is not None:
+        return normalize_or(matches.group(1), matches.group(2))
+
+    matches = unary_op("Ev").fullmatch(formula)
+    if matches is not None:
+        return normalize_ev(matches.group(1))
+
+    matches = unary_op("Glob").fullmatch(formula)
+    if matches is not None:
+        return normalize_glob(matches.group(1))
+
+    # Basic operators (unary)
     matches = unary_op("Neg").fullmatch(formula)
     if matches is not None:
         return f'Neg ({normalize(matches.group(1))})'
 
-    if formula.startswith("And "):
-        left, right = split_internal_op(formula[4:])
-        print(left, right)
-        return f'And ({normalize(left)}, {normalize(right)})'
+    matches = unary_op("Next").fullmatch(formula)
+    if matches is not None:
+        return f'Next ({normalize(matches.group(1))})'
+
+    matches = unary_op("Previous").fullmatch(formula)
+    if matches is not None:
+        return f'Previous ({normalize(matches.group(1))})'
+
+    # Basic operators (binary)
+    prefixes = ["And", "Until", "Wuntil"]
+    for prefix in prefixes:
+        if formula.startswith(f'{prefix}'):
+            left, right = split_internal_op(formula[len(prefix) + 1:])
+            return f'{prefix} ({normalize(left)}, {normalize(right)})'
 
     return formula
 
@@ -77,12 +99,24 @@ def normalize_and(left: str, right: str) -> str:
     return f"And ({normalize(left)}, {normalize(right)})"
 
 
+def normalize_xor(left: str, right: str) -> str:
+    return normalize(f"Or (And ({left}, Neg ({right})), And ({right}, Neg ({left})))")
+
+
 def normalize_imp(left: str, right: str) -> str:
     return normalize(f"Or (Neg ({left}), {right})")
 
 
 def normalize_iff(left: str, right: str) -> str:
     return normalize(f"And (Imp ({left}, {right}), Imp ({right}, {left}))")
+
+
+def normalize_ev(f: str) -> str:
+    return normalize(f"Until (True, {f})")
+
+
+def normalize_glob(f: str) -> str:
+    return normalize(f"Neg (Ev (Neg ({f})))")
 
 
 def binary_op(op: str) -> Pattern:
