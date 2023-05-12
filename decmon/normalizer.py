@@ -1,3 +1,5 @@
+from typing import Callable
+
 from re import compile, Pattern
 
 from decmon.extractor import split_internal_op
@@ -36,6 +38,9 @@ elif op == 'True':
     elif op == 'Wuntil':
 """
 
+'Neg (And (Neg (And (a, Neg (b)), And (b), Neg (Neg (a)))))'
+'Or (And (a, Neg (b)), And (b, Neg (a)))'
+
 
 def normalize(formula: str) -> str:
     """
@@ -43,47 +48,32 @@ def normalize(formula: str) -> str:
     :param formula: input formula
     :return: output formula
     """
+    if formula.startswith("Or"):
+        return normalize_binary(formula, "Or", normalize_or)
+    elif formula.startswith("Xor"):
+        return normalize_binary(formula, "Xor", normalize_xor)
+    elif formula.startswith("Imp"):
+        return normalize_binary(formula, "Imp", normalize_imp)
+    elif formula.startswith("Iff"):
+        return normalize_binary(formula, "Iff", normalize_iff)
+    elif formula.startswith("Ev"):
+        return normalize_unary(formula, "Ev", normalize_ev)
+    elif formula.startswith("Glob"):
+        return normalize_unary(formula, "Glob", normalize_glob)
+    else:
+        return basic_ops(formula)
 
-    matches = binary_op("Or").fullmatch(formula)
-    if matches is not None:
-        return normalize_or(matches.group(1), matches.group(2))
 
-    matches = binary_op("Imp").fullmatch(formula)
-    if matches is not None:
-        return normalize_imp(matches.group(1), matches.group(2))
-
-    matches = binary_op("Iff").fullmatch(formula)
-    if matches is not None:
-        return normalize_iff(matches.group(1), matches.group(2))
-
-    matches = binary_op("Xor").fullmatch(formula)
-    if matches is not None:
-        return normalize_or(matches.group(1), matches.group(2))
-
-    matches = unary_op("Ev").fullmatch(formula)
-    if matches is not None:
-        return normalize_ev(matches.group(1))
-
-    matches = unary_op("Glob").fullmatch(formula)
-    if matches is not None:
-        return normalize_glob(matches.group(1))
-
-    # Basic operators (unary)
-    matches = unary_op("Neg").fullmatch(formula)
-    if matches is not None:
-        return f'Neg ({normalize(matches.group(1))})'
-
-    matches = unary_op("Next").fullmatch(formula)
-    if matches is not None:
-        return f'Next ({normalize(matches.group(1))})'
-
-    matches = unary_op("Previous").fullmatch(formula)
-    if matches is not None:
-        return f'Previous ({normalize(matches.group(1))})'
+def basic_ops(formula: str) -> str:
+    unary = ["Neg", "Next", "Previous"]
+    for prefix in unary:
+        matches = unary_op(prefix).fullmatch(formula)
+        if matches is not None:
+            return f'{prefix} ({normalize(matches.group(1))})'
 
     # Basic operators (binary)
-    prefixes = ["And", "Until", "Wuntil"]
-    for prefix in prefixes:
+    binary = ["And", "Until", "Wuntil"]
+    for prefix in binary:
         if formula.startswith(f'{prefix}'):
             left, right = split_internal_op(formula[len(prefix) + 1:])
             return f'{prefix} ({normalize(left)}, {normalize(right)})'
@@ -91,12 +81,18 @@ def normalize(formula: str) -> str:
     return formula
 
 
+def normalize_binary(formula: str, op: str, f: Callable[[str, str], str]) -> str:
+    left, right = split_internal_op(formula[len(op) + 1:])
+    return f(left, right)
+
+
+def normalize_unary(formula: str, op: str, f: Callable[[str], str]) -> str:
+    operand = formula[len(op) + 2:-1]
+    return f(operand)
+
+
 def normalize_or(left: str, right: str) -> str:
     return normalize(f"Neg (And (Neg ({left}), Neg ({right})))")
-
-
-def normalize_and(left: str, right: str) -> str:
-    return f"And ({normalize(left)}, {normalize(right)})"
 
 
 def normalize_xor(left: str, right: str) -> str:
@@ -119,10 +115,7 @@ def normalize_glob(f: str) -> str:
     return normalize(f"Neg (Ev (Neg ({f})))")
 
 
-def binary_op(op: str) -> Pattern:
-    return compile(fr"{op} \((.+), (.+)\)")
-
-
+# TODO: deprecate
 def unary_op(op: str) -> Pattern:
     return compile(fr"{op} \((.+)\)")
 
