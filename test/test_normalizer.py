@@ -1,6 +1,6 @@
 import unittest
 
-from decmon.normalizer import normalize, normalize_or, binary_op
+from decmon.normalizer import normalize
 
 
 class TestNormalizer(unittest.TestCase):
@@ -22,7 +22,6 @@ class TestNormalizer(unittest.TestCase):
     f5n = "And (Neg (And (Neg (Neg (a)), Neg (b))), Neg (And (Neg (Neg (b)), Neg (a))))"
     f6n = "And (Neg (And (Neg (a), Neg (b))), c)"
     f7n = "Neg (Until (True, Neg (a)))"
-    #f8n = "Or (And (a, Neg (b)), And (b, Neg (a)))"
     f8n = "Neg (And (Neg (And (a, Neg (b))), Neg (And (b, Neg (a)))))"
     f9n = "Until (True, a)"
 

@@ -1,7 +1,5 @@
 from typing import Callable
 
-from re import compile, Pattern
-
 from decmon.extractor import split_internal_op
 
 """
@@ -67,9 +65,9 @@ def normalize(formula: str) -> str:
 def basic_ops(formula: str) -> str:
     unary = ["Neg", "Next", "Previous"]
     for prefix in unary:
-        matches = unary_op(prefix).fullmatch(formula)
-        if matches is not None:
-            return f'{prefix} ({normalize(matches.group(1))})'
+        if formula.startswith(f'{prefix}'):
+            operand = formula[len(prefix) + 2:-1]
+            return f'{prefix} ({normalize(operand)})'
 
     # Basic operators (binary)
     binary = ["And", "Until", "Wuntil"]
@@ -113,9 +111,3 @@ def normalize_ev(f: str) -> str:
 
 def normalize_glob(f: str) -> str:
     return normalize(f"Neg (Ev (Neg ({f})))")
-
-
-# TODO: deprecate
-def unary_op(op: str) -> Pattern:
-    return compile(fr"{op} \((.+)\)")
-
