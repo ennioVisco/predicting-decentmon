@@ -4,9 +4,6 @@ from decmon.extractor import split_internal_op
 
 """
 We want to get BNF, so we need to normalize the formulae:
-- Or (a, b) -> Neg (And (Neg (a), Neg (b)))
-- Imp (a, b) -> Or (Neg (a), b) -> Neg (And (a, Neg (b)))
-- Iff (a, b) -> And (Imp (a, b), Imp (b, a)) -> 
 elif op == 'True':
         return 1
     elif op == 'False':
@@ -35,9 +32,6 @@ elif op == 'True':
         return 14
     elif op == 'Wuntil':
 """
-
-'Neg (And (Neg (And (a, Neg (b)), And (b), Neg (Neg (a)))))'
-'Or (And (a, Neg (b)), And (b, Neg (a)))'
 
 
 def normalize(formula: str) -> str:
