@@ -3,6 +3,7 @@ from pandas import read_csv, DataFrame, concat
 from decmon.constants import METRICS
 from decmon.extractor import encode_ops
 from decmon.filter import select_metric
+from decmon.normalizer import normalize
 
 
 def load_simulation_data(path: str) -> DataFrame:
@@ -12,12 +13,12 @@ def load_simulation_data(path: str) -> DataFrame:
     :return: dataframe with simulation data
     """
     df = read_csv(path, sep='@')
-    df.insert(0, 'formula_id', range(0, len(df)))
+    df.insert(0, 'formula_id', len(df))
     df.columns = df.columns.str.strip()
     return df
 
 
-def extract_ops(df: DataFrame) -> (DataFrame, DataFrame):
+def normalize_ops(df: DataFrame) -> (DataFrame, DataFrame):
     """
     Extracts the operations from the given dataframe. This includes
     the encoded operations within the full expansion of the formula.
@@ -25,7 +26,20 @@ def extract_ops(df: DataFrame) -> (DataFrame, DataFrame):
     :return: dataframe with fully expanded formula and encoded operations
     """
     df = df.copy()
-    df["formula"] = df["formula"].map(encode_ops)
+    df["formula"] = df["formula"].map(lambda f: normalize(f.strip()))
+    return df
+
+
+def extract_ops(df: DataFrame, encoding: str = 'identifiers') -> (DataFrame, DataFrame):
+    """
+    Extracts the operations from the given dataframe. This includes
+    the encoded operations within the full expansion of the formula.
+    :param encoding: encoding identifier to use
+    :param df: dataframe to extract operations from
+    :return: dataframe with fully expanded formula and encoded operations
+    """
+    df = df.copy()
+    df["formula"] = df["formula"].map(normalize).map(lambda f: encode_ops(f, encoding))
 
     return DataFrame(df["formula"].tolist())
 
@@ -43,4 +57,3 @@ def extract_metrics(df: DataFrame) -> DataFrame:
 
     merged_metrics = concat(metrics_data)
     return merged_metrics
-

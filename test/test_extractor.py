@@ -8,6 +8,7 @@ from decmon.extractor import count_op, count_set_ops, temporal_operators, classi
 class TestExtractor(unittest.TestCase):
     test_formula = 'Until (Ev (Var "b"), And (Var "c", Var "a"))'
     test_trace = "{a|b| } ; { | | } ; {a| | }"
+    test_formula2 = 'Until (Ev (Var "b"), And (True, Var "a"))'
 
     def tests_it_works(self):
         self.assertEqual(True, True)
@@ -87,33 +88,33 @@ class TestExtractor(unittest.TestCase):
     var_b = "Var \"b\""
 
     def tests_correct_binary_detection(self):
-        encoded = tree_as_array(self.test_binary_formula)
+        encoded = tree_as_array(self.test_binary_formula, encoding="identifiers")
         self.assertEqual(3, len(encoded))
         self.assertEqual(["Until", self.var_b, self.var_a], encoded)
 
     def tests_correct_unary_detection(self):
-        encoded = tree_as_array(self.test_unary_formula)
+        encoded = tree_as_array(self.test_unary_formula, encoding="identifiers")
         self.assertEqual(3, len(encoded))
         self.assertEqual(["Next", self.var_b, "0"], encoded)
 
     def tests_correct_op_encoding(self):
         to_encode = ["Next", self.var_b, "0"]
-        encoded = encode_tree(to_encode)
+        encoded = encode_tree(to_encode, encoding="identifiers")
         self.assertEqual(11, encoded[0])
         self.assertEqual(-2, encoded[1])
         self.assertEqual(0, encoded[2])
 
     def tests_correct_atom_encoding(self):
-        encoded = encode_tree(tree_as_array(self.var_b))
+        encoded = encode_tree(tree_as_array(self.var_b, encoding="identifiers"), encoding="identifiers")
         self.assertEqual(1, len(encoded))
 
     def test_nested_formula_correctly_encoded(self):
-        encoded = encode_tree(tree_as_array(self.test_formula))
+        encoded = encode_tree(tree_as_array(self.test_formula, encoding="identifiers"), encoding="identifiers")
         self.assertEqual([10, 12, -2, 0, 4, -3, -1], encoded)
 
     def test_nested_formula_correctly_encoded_alternative(self):
         to_encode = f"Ev (And ({self.var_a}, {self.var_b}))"
-        encoded = encode_ops(to_encode)
+        encoded = encode_ops(to_encode, encoding="identifiers")
         self.assertEqual([12, 4, -1, -2, 0], encoded)
 
     def test_no_out_most_comma(self):
@@ -126,10 +127,20 @@ class TestExtractor(unittest.TestCase):
         self.assertEqual(None, encoded)
 
     def test_parse_event_basic(self):
-        encoded = encode_ops(self.var_a)
+        encoded = encode_ops(self.var_a, encoding="identifiers")
+        encoded2 = encode_ops(self.var_a, encoding="urgency")
         self.assertEqual([-1], encoded)
+        self.assertEqual([-1], encoded2)
 
     def test_parse_event_nested(self):
         to_encode = f"Next ({self.var_a})"
-        encoded = encode_ops(to_encode)
+        encoded = encode_ops(to_encode, encoding="identifiers")
+        encoded2 = encode_ops(to_encode, encoding="urgency")
         self.assertEqual([11, -1, 0], encoded)
+        self.assertEqual([1, -1, 0], encoded2)
+
+    def test_parse_formula_with_booleans(self):
+        result = [10, 12, -2, 0, 4, 1, -1]
+        encoded = encode_ops(self.test_formula2, encoding='identifiers')
+        self.assertEqual(result, encoded)
+

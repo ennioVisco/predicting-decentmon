@@ -1,4 +1,4 @@
-from re import findall, match, search, compile, Pattern
+from re import findall, match
 
 op_sets = ["grounds", "atoms", "classic_operators", "temporal_operators"]
 grounds = ["True", "False"]
@@ -85,40 +85,44 @@ def flatten_once(ls: list[list]) -> list:
     return [item for sublist in ls for item in sublist]
 
 
-def encode_ops(source: str) -> list[int]:
+def encode_ops(source: str, encoding: str) -> list[int]:
     """
     Encodes the given source string in a list of integers
+    :param encoding: encoding identifier to use
     :param source: text to encode
     :return: list of integers
     """
-    return encode_tree(tree_as_array(source.strip()))
+    return encode_tree(tree_as_array(source.strip(), encoding), encoding)
 
 
-def encode_tree(source: list[str]) -> list[int]:
+def encode_tree(source: list[str], encoding: str) -> list[int]:
     """
     Encodes the given source string in a list of integers
+    :param encoding: encoding identifier to use
     :param source: text to encode
     :return: list of integers
     """
-    return [convert_op_to_int(op) for op in source]
+    return [convert_op_to_int(op, encoding) for op in source]
 
 
-def tree_as_array(source: str) -> list[str]:
+def tree_as_array(source: str, encoding: str) -> list[str]:
     """
     Encodes the given source string in a list of integers
+    :param encoding: encoding identifier to use
     :param source: text to encode
     :return: list of integers
     """
-    op, operand = split_outermost_op(source)
+    op, operand = split_outermost_op(source, encoding)
     if operand is None:
         return op
 
     inner = split_internal_op(operand)
-    return op + tree_as_array(inner[0]) + tree_as_array(inner[1])
+    return op + tree_as_array(inner[0], encoding) + tree_as_array(inner[1], encoding)
 
 
-def split_outermost_op(op: str) -> ([str], str | None):
-    if convert_op_to_int(op) <= 0:
+def split_outermost_op(op: str, encoding: str) -> ([str], str | None):
+    conversion = convert_op_to_int(op, encoding)
+    if (conversion <= 2 and encoding == "identifiers") or (conversion <= 0 and encoding == "urgency"):
         return [op], None
     external_op, operand = split_op(op)
     return [external_op], operand
@@ -162,15 +166,56 @@ def find_outmost_comma(source: str) -> int | None:
             return i
 
 
-def convert_op_to_int(op: str) -> int:
+def convert_op_to_int(op: str, encoding: str) -> int:
     """
     We categorize operators
+    :param encoding: encoding identifier to use
     :param op: operator
     :return: integer encoding of the operator
     """
+    if encoding == "identifiers":
+        return identifiers_encoding(op)
+    elif encoding == "urgency":
+        return urgency_encoding(op)
+
+
+def urgency_encoding(op: str) -> int:
+    if op == "0" or op == 'True' or op == 'False':
+        return 0
+    elif match(r'Var "\w+"', op):
+        return -1
+    elif op == 'And' or op == 'Neg' or op == 'Previous' or op == 'Next':
+        return 1
+    elif op == 'Until' or op == 'Wuntil':
+        return 2
+    else:
+        return 3
+        #raise ValueError(f"Unable to encode: {op}")
+
+
+def identifiers_encoding(op: str) -> int:
     if op == "0":
         return 0
-    elif op == 'True':
+    elif op == 'Until':
+        return 10
+    elif op == 'Next':
+        return 11
+    elif op == 'Ev':
+        return 12
+    elif op == 'Glob':
+        return 13
+    elif op == 'Previous':
+        return 14
+    elif op == 'Wuntil':
+        return 15
+    elif match(r'Var "\w+"', op):
+        return convert_event_to_int(op[5:-1])
+    else:
+        return _classic_logic_ops(op)
+
+
+def _classic_logic_ops(op: str) -> int:
+    if op == 'True':
         return 1
     elif op == 'False':
         return 2
@@ -186,20 +231,6 @@ def convert_op_to_int(op: str) -> int:
         return 8
     elif op == 'Xor':
         return 9
-    elif op == 'Until':
-        return 10
-    elif op == 'Next':
-        return 11
-    elif op == 'Ev':
-        return 12
-    elif op == 'Glob':
-        return 13
-    elif op == 'Previous':
-        return 14
-    elif op == 'Wuntil':
-        return 15
-    elif match(r'Var "\w+"', op):
-        return convert_event_to_int(op[5:-1])
     else:
         return 3
 
