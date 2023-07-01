@@ -1,0 +1,3 @@
+[submodule "decent"]
+	path = decent
+	url = https://github.com/ennioVisco/decent-tools.git
