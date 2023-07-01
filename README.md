@@ -38,10 +38,20 @@ Extract the content in the same directory to run the scripts.
 # Repository structure
 The repository is organized as follows:
 
-- `decmon` contains the code that has been developed to process, organize and transform the data.
+- `decmon` and `test` contain the code (and tests) that have been developed to process, organize and transform the data.
 - `input` is the folder from which we will read traces
 - `output` is where the output files will be generated (e.g. statistics pictures). It is already filled with the files generated from the run of the paper.
-- 
+- `decent` contains the decentmon tool. It is not required to setup it to run the experiments, although the user interested in simulating new/alternative traces, can refer to https://github.com/ennioVisco/decent-tools for installation details, and customize the `run.py` file to automatically import the resulting traces in the current project.
+- `formula_patterns_1/2.png` contain some aggregated stats about the formulae that have been generated for the experiments.
+
+### Then a set of notebooks is available:
+Note that all notebooks have paper-run information preloaded, although they can be re-run on demand.
+- `full_data_*.ipynb` contain the data preprocessing for respectively systems of `3`, `5`, `7` and `9` nodes.
+- `trace_encoding.ipynb` and `preparation.ipynb` encode and prepare the data for the learning process.
+- `classification.ipynb` contains all the classification models trainings
+- `regression_*.ipynb` contain the regression models trainings for respectively systems of `3`, `5`, `7` and `9` nodes, and for each metric.
+
+Please note that each `regression_*` file can require several hours to run!
 
 # Misc
 
