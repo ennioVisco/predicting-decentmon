@@ -18,7 +18,7 @@ To run them via poetry, follow these instructions (they require python 3.7+ in t
 ```sh
 pip install poetry
 ```
-And afterwards:
+And afterward:
 ```sh
 poetry install
 ```
@@ -50,6 +50,7 @@ Note that all notebooks have paper-run information preloaded, although they can 
 - `trace_encoding.ipynb` and `preparation.ipynb` encode and prepare the data for the learning process.
 - `classification.ipynb` contains all the classification models trainings
 - `regression_*.ipynb` contain the regression models trainings for respectively systems of `3`, `5`, `7` and `9` nodes, and for each metric.
+- `regression_*_linear.ipynb` contain the comparison and plotting among the linear models for respectively systems of `3`, `5`, `7` and `9` nodes, and for each metric.
 
 Please note that each `regression_*` file can require several hours to run!
 
