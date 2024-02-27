@@ -25,7 +25,7 @@ poetry install
 And finally:
 # Run
 ```sh
-jupyter notebook
+poetry run jupyter notebook
 ```
 
 # Open notebooks:
@@ -33,7 +33,10 @@ Whichever procedure you used, notebooks should be available at http://localhost:
 
 ## Extract data
 Most of the simulation data is available in `input/3_5_7_9.zip`.
-Extract the content in the same directory to run the scripts.
+
+~~Extract the content in the same directory to run the scripts.~~
+
+It has been pre-extracted to simplify the first run.
 
 # Repository structure
 The repository is organized as follows:

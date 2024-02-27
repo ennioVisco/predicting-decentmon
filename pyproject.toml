@@ -16,12 +16,11 @@ jupyter = "^1.0.0"
 ipynb = "^0.5.1"
 yellowbrick = "^1.5"
 ipykernel = "^6.23.1"
-jupyterlab = "^4.0.0"
-notebook = "^6.5.4"
 mgzip = "^0.2.1"
 
 [tool.poetry.group.dev.dependencies]
 coverage = "^6.4.4"
+notebook = "^6.5.4"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
