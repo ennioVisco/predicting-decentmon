@@ -1,8 +1,12 @@
 [tool.poetry]
-name = "distributed-monitor"
-version = "0.1.0"
+name = "pred-decent"
+version = "0.1.1"
 description = ""
 authors = ["Ennio Visconti <ennio.visconti@gmail.com>"]
+#package-mode = false
+packages = [
+    { include = "decmon" }
+]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.12"
@@ -23,5 +27,5 @@ coverage = "^6.4.4"
 notebook = "^6.5.4"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=1.9.0"]
 build-backend = "poetry.core.masonry.api"

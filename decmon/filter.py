@@ -56,6 +56,12 @@ def split_by_dictionary(df: DataFrame, strategies: dict[str, str]) \
 
 
 def prepare_with_pattern(dfs: [DataFrame]) -> [DataFrame]:
+    """
+    Adds a `pattern` column to each dataframe, drops the `formula_id`, and
+    resets the index.
+    :param dfs: the list of dataframes to prepare
+    :return: a list of new dataframes with the new changes
+    """
     dfs = [dfs[i].copy() for i in PATTERNS]
     dfs = [add_column(dfs[i], 'pattern', i) for i in PATTERNS]
     dfs = [dfs[i].drop(['formula_id'], axis=1) for i in PATTERNS]

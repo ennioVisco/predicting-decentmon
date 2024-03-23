@@ -29,11 +29,12 @@ class TestRunner(unittest.TestCase):
 
     def test_final_command_to_run_is_complete(self):
         command = full_cmd("irrelevant", 0, 3)
-        self.assertEqual('dune',    command[0])
-        self.assertEqual('-n',      command[10])
-        self.assertEqual('-abs',    command[20])
-        self.assertEqual('-consc',  command[36])
-        self.assertEqual('-file',   command[38])
+        self.assertEqual('opam',    command[0])
+        self.assertEqual('dune',    command[3])
+        self.assertEqual('-n',      command[13])
+        self.assertEqual('-abs',    command[23])
+        self.assertEqual('-consc',  command[39])
+        self.assertEqual('-file',   command[41])
 
     def test_can_run_commands(self):
         p = run(['echo', 'hello'])

@@ -8,7 +8,8 @@ from decmon.constants import ALPHABET
 from decmon.extractor import flatten_once
 
 
-base_cmd = ['dune', 'exec', 'decent', '--',
+base_cmd = ['opam', 'exec', '--',
+            'dune', 'exec', 'decent', '--',
             '-prt_full', 'true',
             '-keep_samples', 'true',
             '-seed', '3',
