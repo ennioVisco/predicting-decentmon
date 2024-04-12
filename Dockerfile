@@ -9,15 +9,13 @@ ENV PATH="$POETRY_PATH/bin:$VENV_PATH/bin:$PATH"
 
 # We copy the project files in the VM
 WORKDIR /app
-COPY . .
+ADD . .
 
 # We install the base dependencies for Python and OCaml
 USER root
 RUN apt-get update \
-    && apt-get install -y build-essential \
-    && apt-get install -y opam \
-    && apt-get install -y camlp5 \
-    && apt-get install -y xdot
+    && apt-get install -y build-essential opam camlp5 xdot \
+    && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 # We set up OCaml
 RUN opam init --compiler=4.14.0 --disable-sandboxing

@@ -1,18 +1,21 @@
 # Decentmon scripts
 This repo is thought to provide information already by exploring it, although any of the notebook can be locally run and modified.
 
-The notebooks can be run in two ways, via docker (unstable because of issues of jupyter with docker, see e.g. https://github.com/microsoft/vscode-jupyter/issues/8670) and via poetry (RECOMMENDED):
+The notebooks can be run in two ways, via docker, recommended to avoid the installation pains of DecentMon, and via poetry:
 
-## Install via Docker (Not recommended)
+## Run via Docker
 To run them via docker, just run:
 ```sh
 docker build -t dist-mon . 
 ```
-And once done,
+And once loaded,
 ```sh
-docker run -dp 8888:8888 --user root dist-mon
+docker run -dp 8888:8888 pred-decent
 ```
-## Install via Poetry (Recommended)
+Then go to [http://localhost:8888](http://localhost:8888), to proceed in Jupyer Lab, convenient to test for the badge claims.
+
+
+## Install via Poetry
 To run them via poetry, follow these instructions (they require python 3.7+ in the running environment):
 
 ```sh
@@ -59,7 +62,7 @@ Please note that each `regression_*` file can require several hours to run!
 
 # Misc
 
-### Development
+### Development§
 
 To run unit tests:
 ```shell
@@ -69,4 +72,9 @@ python -m unittest discover
 Or with coverage:
 ```shell
 coverage run -m unittest discover
+```
+
+Then to check the coverage report:
+```shell
+coverage report -m
 ```

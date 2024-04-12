@@ -52,14 +52,16 @@ def output(prefix):
 
 def full_cmd(prefix: str, pattern: int, components: int) -> [str]:
     return base_cmd + options + alphabet(components) + \
-            prepare_patterns(pattern, formula_patterns) + \
-            output(prefix)
+        prepare_patterns(pattern, formula_patterns) + \
+        output(prefix)
 
 
-def run(command: [str], pause_for: int = 0) -> Popen:
+def run(command: [str], pause_for: int = 0, parallel=True) -> Popen:
     print(f'Running: {" ".join(command)}')
     process = Popen(command, stdout=PIPE, stderr=STDOUT)
     sleep(pause_for)
+    if not parallel:
+        process.wait()
     return process
 
 
@@ -69,11 +71,14 @@ def print_output(process: Popen):
     return to_print
 
 
-def run_batch(prefix: str, patterns: range, components: int) -> [Popen]:
+def run_batch(prefix: str, patterns: range, components: int, parallel=True) -> [Popen]:
+    if not parallel:
+        print("Executing DecentMon sequentially...")
     current_time = datetime.now().strftime("%Y_%m_%d__%H_%M")
     path = f'./{prefix}/{current_time}'
     makedirs(path, exist_ok=True)
-    processes = [run(full_cmd(f'{path}/{p}', p, components)) for p in patterns]
+    processes = [run(full_cmd(f'{path}/{p}', p, components),
+                     pause_for=1, parallel=parallel) for p in patterns]
     return processes
 
 
